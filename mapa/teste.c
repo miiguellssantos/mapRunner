@@ -54,15 +54,15 @@ int main(void)
     al_register_event_source(fila, al_get_timer_event_source(timer));
 
     /* ---- 3. carregar o tileset e o primeiro mapa ---- */
-    ALLEGRO_BITMAP *tileset = al_load_bitmap("imagens/tileset.png");
+    ALLEGRO_BITMAP *tileset = al_load_bitmap(CAMINHO_TILESET);
     if (!tileset) {
-        fprintf(stderr, "Nao achei imagens/tileset.png (rode de dentro da pasta do projeto)\n");
+        fprintf(stderr, "Nao achei %s (rode de dentro da pasta do projeto)\n", CAMINHO_TILESET);
         return 1;
     }
 
     Mapa *mapa = NULL;
     float x = 0, y = 0;
-    trocar_mapa(&mapa, "mapas/mapa1.txt", tileset, janela, &x, &y);
+    trocar_mapa(&mapa, CAMINHO_MAPA1, tileset, janela, &x, &y);
     if (!mapa) return 1;
 
     /* ---- 4. loop do jogo ---- */
@@ -83,9 +83,9 @@ int main(void)
             teclas[ev.keyboard.keycode] = true;
             if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) rodando = false;
             if (ev.keyboard.keycode == ALLEGRO_KEY_1)
-                trocar_mapa(&mapa, "mapas/mapa1.txt", tileset, janela, &x, &y);
+                trocar_mapa(&mapa, CAMINHO_MAPA1, tileset, janela, &x, &y);
             if (ev.keyboard.keycode == ALLEGRO_KEY_2)
-                trocar_mapa(&mapa, "mapas/mapa2.txt", tileset, janela, &x, &y);
+                trocar_mapa(&mapa, CAMINHO_MAPA2, tileset, janela, &x, &y);
         }
         else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
             teclas[ev.keyboard.keycode] = false;

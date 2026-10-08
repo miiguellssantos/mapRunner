@@ -1,9 +1,13 @@
 #pragma once
  
 #include <allegro5/allegro.h>
-#include <stdbool.h>
  
-#define TILE_SIZE 20   /* 30 colunas x 20 = 600 ; 20 linhas x 20 = 400 */
+#define TILE_SIZE 20   /* 33 colunas x 20 = 660 ; 21 linhas x 20 = 420 */
+ 
+/* Caminhos dos arquivos (definidos so aqui; relativos a pasta do projeto) */
+#define CAMINHO_TILESET "imagens/tileset.png"
+#define CAMINHO_MAPA1   "mapas/mapa1.txt"
+#define CAMINHO_MAPA2   "mapas/mapa2.txt"
  
 /* Tipos de bloco (o numero no arquivo .txt = coluna no tileset) */
 #define TILE_CHAO   0
@@ -23,9 +27,7 @@ Mapa *mapa_carregar(const char *arquivo_txt, ALLEGRO_BITMAP *tileset);
 /* Desenha todos os blocos na tela. */
 void mapa_desenhar(const Mapa *m);
  
-/* true se o bloco (linha, coluna) bloqueia o personagem. */
-bool mapa_bloco_solido(const Mapa *m, int linha, int coluna);
- 
 /* Libera a memoria (nao destroi o tileset, que pode ser compartilhado). */
 void mapa_liberar(Mapa *m);
+ 
  
