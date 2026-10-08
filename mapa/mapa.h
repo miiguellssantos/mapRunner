@@ -3,7 +3,7 @@
 #include <allegro5/allegro.h>
 #include <stdbool.h>
  
-#define TILE_SIZE 20   /* 33 colunas x 20 = 660 ; 21 linhas x 20 = 420 */
+#define TILE_SIZE 20   /* 30 colunas x 20 = 600 ; 20 linhas x 20 = 400 */
  
 /* Tipos de bloco (o numero no arquivo .txt = coluna no tileset) */
 #define TILE_CHAO   0
@@ -25,9 +25,6 @@ void mapa_desenhar(const Mapa *m);
  
 /* true se o bloco (linha, coluna) bloqueia o personagem. */
 bool mapa_bloco_solido(const Mapa *m, int linha, int coluna);
- 
-/* true se o retangulo (x, y, w, h) em pixels encosta em algum bloco solido. */
-bool mapa_colide(const Mapa *m, float x, float y, float w, float h);
  
 /* Libera a memoria (nao destroi o tileset, que pode ser compartilhado). */
 void mapa_liberar(Mapa *m);

@@ -10,8 +10,11 @@ Mapa *mapa_carregar(const char *arquivo_txt, ALLEGRO_BITMAP *tileset)
         return NULL;
     }
 
-    Mapa *m = malloc(sizeof(Mapa));
-    if (!m) { fclose(f); return NULL; }
+    Mapa* m = malloc(sizeof(Mapa));
+    if (!m) { 
+    fclose(f); 
+    return NULL; 
+}
 
     /* Formato: 1a linha = "linhas colunas", depois a matriz */
     if (fscanf(f, "%d %d", &m->linhas, &m->colunas) != 2 ||
@@ -46,10 +49,7 @@ void mapa_desenhar(const Mapa *m)
         for (int j = 0; j < m->colunas; j++) {
             int tipo = m->tiles[i][j];
             /* recorta o bloco 'tipo' do tileset (blocos lado a lado) */
-            al_draw_bitmap_region(m->tileset,
-                                  tipo * TILE_SIZE, 0,
-                                  TILE_SIZE, TILE_SIZE,
-                                  j * TILE_SIZE, i * TILE_SIZE, 0);
+            al_draw_bitmap_region(m->tileset, tipo * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, j * TILE_SIZE, i * TILE_SIZE, 0);
         }
     }
 }
@@ -61,23 +61,6 @@ bool mapa_bloco_solido(const Mapa *m, int linha, int coluna)
         return true;
     int t = m->tiles[linha][coluna];
     return t == TILE_PAREDE || t == TILE_AGUA;
-}
-
-bool mapa_colide(const Mapa *m, float x, float y, float w, float h)
-{
-    /* converte as bordas do retangulo para indices de bloco */
-    int c1 = (int)(x / TILE_SIZE);
-    int c2 = (int)((x + w - 1) / TILE_SIZE);
-    int l1 = (int)(y / TILE_SIZE);
-    int l2 = (int)((y + h - 1) / TILE_SIZE);
-    if (x < 0) c1 = -1;
-    if (y < 0) l1 = -1;
-
-    for (int l = l1; l <= l2; l++)
-        for (int c = c1; c <= c2; c++)
-            if (mapa_bloco_solido(m, l, c))
-                return true;
-    return false;
 }
 
 void mapa_liberar(Mapa *m)
