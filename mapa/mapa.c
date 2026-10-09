@@ -22,7 +22,7 @@ Mapa* mapa_carregar(const char *arquivo_txt, ALLEGRO_BITMAP *tileset) {
         fclose(f);
         return NULL;
     }
-    // le a primeira linha: numero de linhas e colunas
+    
 
     if (m->linhas != LINHAS_MAPA || m->colunas != COLUNAS_MAPA) {
     printf("Erro: %s deve ter %d x %d\n", arquivo_txt, LINHAS_MAPA, COLUNAS_MAPA);
@@ -37,8 +37,7 @@ Mapa* mapa_carregar(const char *arquivo_txt, ALLEGRO_BITMAP *tileset) {
     m->tiles = malloc(m->linhas * sizeof(int*));
     for (int i = 0; i < m->linhas; i++)
         m->tiles[i] = NULL;
-        // aloca a matriz
-
+        
     for (int i = 0; i < m->linhas; i++) {
         m->tiles[i] = malloc(m->colunas * sizeof(int));
         for (int j = 0; j < m->colunas; j++) {
