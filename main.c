@@ -9,41 +9,41 @@
 const float FPS = 60.0f;
 
 int main() {
-    // 1. Inicialização do Allegro
+    //inicializando o allegro e os addons
     al_init();
     al_init_image_addon();
     al_install_keyboard();
     al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_WINDOWED);
 
-    // Usa as definições do seu mapa.h para criar a janela
+    // usa as configs do mapa.h pra criar a janela do game
     ALLEGRO_DISPLAY *display = al_create_display(LARGURA_JANELA, ALTURA_JANELA);
     al_set_window_title(display, "Jogo Integrado - Mapa e Personagem");
 
     ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
     ALLEGRO_EVENT_QUEUE *fila_eventos = al_create_event_queue();
     
-    // 2. Carregamento de Recursos (Imagens)
+    //carregando os recursos (sprites e tileset)
     ALLEGRO_BITMAP *spritesheet = al_load_bitmap("sprites.png"); 
     ALLEGRO_BITMAP *tileset = al_load_bitmap(CAMINHO_TILESET);
     
     if (!spritesheet || !tileset) {
-        printf("Erro: Falha ao carregar imagens (spritesheet ou tileset).\n");
+        printf("erro: falha ao carregar imagens (spritesheet ou tileset).\n");
         return -1;
     }
 
-    // 3. Inicialização do Mapa
+    // inicializando o primeiro mapa
     bool usando_mapa1 = true;
     Mapa *mapa_atual = mapa_carregar(CAMINHO_MAPA1, tileset);
     if (!mapa_atual) {
         return -1; 
     }
     
-    // 4. Registro de Eventos
+    // registrando as fontes de eventos
     al_register_event_source(fila_eventos, al_get_display_event_source(display));
     al_register_event_source(fila_eventos, al_get_timer_event_source(timer));
     al_register_event_source(fila_eventos, al_get_keyboard_event_source());
 
-    // 5. Inicialização do Personagem
+    // inicializando o player
     Personagem player;
     inicializar_personagem(&player);
 
@@ -54,7 +54,7 @@ int main() {
 
     al_start_timer(timer);
 
-    // 6. Loop Principal
+    // loop principal do jogo
     while (rodando) {
         ALLEGRO_EVENT evento;
         al_wait_for_event(fila_eventos, &evento);
@@ -64,7 +64,7 @@ int main() {
         }
         else if (evento.type == ALLEGRO_EVENT_KEY_DOWN) {
             
-            // Tecla M: Alterna entre os cenários
+            // tecla m: troca de cenario manualmente
             if (evento.keyboard.keycode == ALLEGRO_KEY_M) {
                 mapa_liberar(mapa_atual);
                 
@@ -77,12 +77,12 @@ int main() {
                 }
                 
                 if (!mapa_atual) {
-                    printf("Erro ao carregar o novo mapa!\n");
+                    printf("erro ao carregar o novo mapa!\n");
                     rodando = false;
                 }
             }
             
-            // Tecla R: Recarrega o ficheiro de texto do mapa atual (Hot-reload)
+            // tecla r: recarrega o txt do mapa atual (hot-reloadzin)
             else if (evento.keyboard.keycode == ALLEGRO_KEY_R) {
                 mapa_liberar(mapa_atual);
                 
@@ -93,10 +93,10 @@ int main() {
                 }
                 
                 if (!mapa_atual) {
-                    printf("Erro ao recarregar o mapa atual!\n");
+                    printf("erro ao recarregar o mapa atual!\n");
                     rodando = false;
                 } else {
-                    printf("Mapa atualizado com as mudancas do txt!\n");
+                    printf("mapa atualizado com as mudancas do txt!\n");
                 }
             }
         }
@@ -104,38 +104,38 @@ int main() {
             ALLEGRO_KEYBOARD_STATE teclado;
             al_get_keyboard_state(&teclado);
             
-            // O boneco se move
+            // atualiza a posicao e animacao do boneco
             atualizar_personagem(&player, &teclado, &contador_animacao, VELOCIDADE_ANIMACAO, mapa_atual);
             
-            // --- NOVA LÓGICA DE TRANSIÇÃO DE MAPA ---
+            // --- logica de transicao de mapa pelas bordas ---
             bool trocar_mapa = false;
             
             if (player.x > LARGURA_JANELA) { 
-                // Saiu pela direita, aparece na esquerda
+                // saiu pela direita, aparece na esquerda
                 player.x = -SPRITE_LARGURA + player.velocidade; 
                 trocar_mapa = true;
             } 
             else if (player.x + SPRITE_LARGURA < 0) { 
-                // Saiu pela esquerda, aparece na direita
+                // saiu pela esquerda, aparece na direita
                 player.x = LARGURA_JANELA - player.velocidade;
                 trocar_mapa = true;
             } 
             else if (player.y > ALTURA_JANELA) { 
-                // Saiu por baixo, aparece em cima
+                // saiu por baixo, aparece em cima
                 player.y = -SPRITE_ALTURA + player.velocidade;
                 trocar_mapa = true;
             } 
             else if (player.y + SPRITE_ALTURA < 0) { 
-                // Saiu por cima, aparece embaixo
+                // saiu por cima, aparece embaixo
                 player.y = ALTURA_JANELA - player.velocidade;
                 trocar_mapa = true;
             }
 
-            // Se o boneco tocou em alguma borda aberta, troca o cenário
+            // se bateu na borda, troca o cenario
             if (trocar_mapa) {
                 mapa_liberar(mapa_atual);
                 
-                // Inverte rapidamente qual mapa estamos usando
+                // inverte o mapa atual
                 usando_mapa1 = !usando_mapa1; 
                 
                 if (usando_mapa1) {
@@ -145,7 +145,7 @@ int main() {
                 }
                 
                 if (!mapa_atual) {
-                    printf("Erro ao carregar mapa durante a transição!\n");
+                    printf("erro ao carregar mapa durante a transicao!\n");
                     rodando = false;
                 }
             }
@@ -154,21 +154,21 @@ int main() {
             redesenhar = true;
         }
 
-        // 7. Desenho na Tela
+        // renderizacao na tela
         if (redesenhar && al_is_event_queue_empty(fila_eventos)){
             redesenhar = false;
             
-            // Desenha o fundo (Mapa) primeiro
+            // desenha o fundo (mapa) primeiro
             mapa_desenhar(mapa_atual);
             
-            // Desenha o personagem por cima do mapa
+            // desenha o player por cima
             desenhar_personagem(&player, spritesheet);
             
             al_flip_display();
         }
     }
 
-    // 8. Limpeza de Memória
+    // limpando tudo e liberando memoria
     mapa_liberar(mapa_atual);
     al_destroy_bitmap(tileset);
     al_destroy_bitmap(spritesheet);
